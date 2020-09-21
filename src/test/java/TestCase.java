@@ -20,4 +20,11 @@ public class TestCase {
         }
     }
 
+    @Test
+    public void testForPuzzle(){
+        int[][] board = new int[][]{{8,6,5}, {7,3,2},{0,4,1}};
+        int ans = PlayWithPuzzle.slidingPuzzle(board);
+        System.out.println(ans);
+        System.out.println(PlayWithPuzzle.op);
+    }
 }

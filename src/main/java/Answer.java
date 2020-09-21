@@ -1,3 +1,4 @@
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,10 @@ import lombok.NoArgsConstructor;
  */
 public class Answer {
 
+    @JSONField(name = "operations")
     private String operations;
+
+    @JSONField(name = "swap")
     private int[] swap;
 
 }
