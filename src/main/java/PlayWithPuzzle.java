@@ -7,7 +7,7 @@ public class PlayWithPuzzle {
 
     static String op="";
 
-    public static int slidingPuzzle(int[][] board) {
+    public static int slidingPuzzle(int[][] board,int[][] targetInt) {
         int R = board.length, C = board[0].length;
         int sr = 0, sc = 0;
         search:
@@ -25,7 +25,7 @@ public class PlayWithPuzzle {
         seen.add(start.boardstring);
 
         //String target = Arrays.deepToString(new int[][]{{1,2,3}, {4,5,6},{7,8,0}});
-        String target = Arrays.deepToString(new int[][]{{0,1,2}, {3,4,5},{6,7,8}});
+        String target = Arrays.deepToString(targetInt);
 
         while (!queue.isEmpty()) {
             Node node = queue.remove();
@@ -93,6 +93,10 @@ public class PlayWithPuzzle {
         }
 
         return -1;
+    }
+
+    public static int slidingPuzzle(int[][] board) {
+        return slidingPuzzle(board,new int[][]{{1,2,3}, {4,5,6},{7,8,0}});
     }
 
     static class Node {
