@@ -15,6 +15,7 @@ public class TestCase {
             System.out.println(subject.getSwap().length);
             System.out.println(subject.getSwap()[0]+" "+subject.getSwap()[1]);
             System.out.println(subject.getUuid());
+            FileTypeTranslate.generateImage(subject.getImg(),"d://test.jpg");
         } catch (IOException e) {
             e.printStackTrace();
         }
