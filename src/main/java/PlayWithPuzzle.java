@@ -24,7 +24,8 @@ public class PlayWithPuzzle {
         Set<String> seen = new HashSet();
         seen.add(start.boardstring);
 
-        String target = Arrays.deepToString(new int[][]{{1,2,3}, {4,5,6},{7,8,0}});
+        //String target = Arrays.deepToString(new int[][]{{1,2,3}, {4,5,6},{7,8,0}});
+        String target = Arrays.deepToString(new int[][]{{0,1,2}, {3,4,5},{6,7,8}});
 
         while (!queue.isEmpty()) {
             Node node = queue.remove();
