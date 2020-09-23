@@ -1,18 +1,35 @@
+package game;
+
+import entity.Answer;
+import entity.AnswerPoster;
+import entity.Subject;
+import util.*;
+
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 
 public class TagMaking {
 
+    /**
+     * 初始化 + 模拟
+     * @throws Exception
+     */
     public static void initAndPlay() throws Exception {
-        Request.requestForTheImg(PathUtil.REQUEST_URL);
+        // 请求图片
+        Subject requestJSON = Request.requestForTheImg(PathUtil.GET_URL);
+
+        // 切割请求来的图片
         NineZoneDiv.split(PathUtil.REQUEST_PIC,PathUtil.SRC_PIECES+"/");
         String finalDir = ImgCompetition.pickTheOne(PathUtil.SRC_PIECES,PathUtil.TARGET_PIECES);
+
+        // 图片识别与对比
         if(finalDir != null){
             int[][] board = compare(PathUtil.SRC_PIECES,finalDir);
             int[][] target = new int[][]{{0,1,2}, {3,4,5},{6,7,8}};
             int whitePos = findTheWhite(PathUtil.SRC_PIECES);
             System.out.println("whitePos = " + whitePos);
+
             // 0+1+2+..+8 = 36 36-1=35
             int sum = 0;
             for (int i = 0; i < 3; i++) {
@@ -39,9 +56,17 @@ public class TagMaking {
                     }
                 }
             }
-            int ans = PlayWithPuzzle.slidingPuzzle(board,target);
+            Game game = new Game();
+            int ans = game.slidingPuzzle(board,target);
             System.out.println(ans);
-            System.out.println(PlayWithPuzzle.op);
+            if(ans != -1){
+                System.out.println(game.op);
+                String uuid = requestJSON.getUuid();
+                Answer answer = new Answer(game.op,requestJSON.getSwap());
+                AnswerPoster answerPoster = new AnswerPoster(uuid,answer);
+                System.out.println(answerPoster);
+                Request.requestForMyScore(answerPoster);
+            }
         }
     }
 

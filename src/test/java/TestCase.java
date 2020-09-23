@@ -1,4 +1,7 @@
+import game.Game;
+import game.TagMaking;
 import org.junit.Test;
+import util.*;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -11,7 +14,7 @@ public class TestCase {
      */
     @Test
     public void testForGET(){
-        Request.requestForTheImg(PathUtil.REQUEST_URL);
+        Request.requestForTheImg(PathUtil.GET_URL);
     }
 
     /**
@@ -19,10 +22,11 @@ public class TestCase {
      */
     @Test
     public void testForPuzzle(){
-        int[][] board = new int[][]{{1,2,3}, {6,8,0},{5,4,7}};
-        int ans = PlayWithPuzzle.slidingPuzzle(board,new int[][]{{1,2,3}, {4,5,6},{7,8,0}});
+        int[][] board = new int[][]{{7,2,8}, {4,5,3},{6,1,0}};
+        Game game = new Game();
+        int ans = game.slidingPuzzle(board);
         System.out.println(ans);
-        System.out.println(PlayWithPuzzle.op);
+        System.out.println(game.op);
     }
 
     /**
@@ -47,7 +51,9 @@ public class TestCase {
      */
     @Test
     public void playWithPic() throws Exception {
-        TagMaking.initAndPlay();
+        for (int i = 0; i < 5; i++) {
+            TagMaking.initAndPlay();
+        }
     }
 
     /**
@@ -79,10 +85,10 @@ public class TestCase {
      */
     @Test
     public void testForBlackAndWhite() throws Exception {
-        FingerPrint fp1 = new FingerPrint(ImageIO.read(new File("D:/testImg/white.jpg")));
+        FingerPrint fp1 = new FingerPrint(ImageIO.read(new File(PathUtil.WHITE_PIC)));
         FingerPrint fp2 = new FingerPrint(ImageIO.read(new File("D:/testImg/src/0_0.jpg")));
         System.out.println(fp1.compare(fp2));
-        System.out.println(ReadColor.getImagePixel("D:/testImg/white.jpg"));
+        System.out.println(ReadColor.getImagePixel(PathUtil.WHITE_PIC));
     }
 
 }

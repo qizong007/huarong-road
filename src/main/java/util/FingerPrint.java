@@ -1,3 +1,5 @@
+package util;
+
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.color.ColorSpace;
@@ -262,7 +264,7 @@ public final class FingerPrint {
      */
     private static float compare(byte[] f1,byte[] f2){
         if(f1.length!=f2.length)
-            throw new IllegalArgumentException("mismatch FingerPrint length");
+            throw new IllegalArgumentException("mismatch util.FingerPrint length");
         int sameCount=0;
         for(int i=0;i<f1.length;++i){
             if(f1[i]==f2[i])++sameCount;
