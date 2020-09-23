@@ -15,7 +15,7 @@ public class PlayWithPuzzle {
             for (sc = 0; sc < C; sc++)
                 if (board[sr][sc] == 0)
                     break search;
-        // 上，下，左，右
+        // 下，上，右，左
         int[][] directions = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
         Queue<Node> queue = new ArrayDeque();
         Node start = new Node(board, sr, sc, 0,new StringBuilder(""));
@@ -39,16 +39,8 @@ public class PlayWithPuzzle {
                 int nei_r = di[0] + node.zero_r;
                 int nei_c = di[1] + node.zero_c;
 
-                // 操作：上下左右
+                // 操作：下，上，右，左
                 if(di[0]==1 && di[1]==0){
-                    if(index == 0){
-                        node.operations.append('w');
-                        index = node.operations.length();
-                    }else{
-                        node.operations.setCharAt(index-1,'w');
-                    }
-                }
-                else if(di[0]==-1 && di[1]==0){
                     if(index == 0){
                         node.operations.append('s');
                         index = node.operations.length();
@@ -56,20 +48,28 @@ public class PlayWithPuzzle {
                         node.operations.setCharAt(index-1,'s');
                     }
                 }
-                else if(di[1]==1 && di[0]==0){
+                else if(di[0]==-1 && di[1]==0){
                     if(index == 0){
-                        node.operations.append('a');
+                        node.operations.append('w');
                         index = node.operations.length();
                     }else{
-                        node.operations.setCharAt(index-1,'a');
+                        node.operations.setCharAt(index-1,'w');
                     }
                 }
-                else if(di[1]==-1 && di[0]==0){
+                else if(di[1]==1 && di[0]==0){
                     if(index == 0){
                         node.operations.append('d');
                         index = node.operations.length();
                     }else{
                         node.operations.setCharAt(index-1,'d');
+                    }
+                }
+                else if(di[1]==-1 && di[0]==0){
+                    if(index == 0){
+                        node.operations.append('a');
+                        index = node.operations.length();
+                    }else{
+                        node.operations.setCharAt(index-1,'a');
                     }
                 }
 

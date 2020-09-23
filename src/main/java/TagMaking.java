@@ -5,15 +5,14 @@ import java.io.IOException;
 public class TagMaking {
 
     public static void initAndPlay() throws Exception {
-        Request.requestForTheImg("http://47.102.118.1:8089/api/problem?stuid=111800827");
-        NineZoneDiv.split("D:/testImg/test.jpg","D:/testImg/src/");
-        String finalDir = ImgCompetition.pickTheOne("D:/testImg/src","D:/testImg/target");
+        Request.requestForTheImg(PathUtil.REQUEST_URL);
+        NineZoneDiv.split(PathUtil.REQUEST_PIC,PathUtil.SRC_PIECES+"/");
+        String finalDir = ImgCompetition.pickTheOne(PathUtil.SRC_PIECES,PathUtil.TARGET_PIECES);
         if(finalDir != null){
-            int[][] board = compare("D:/testImg/src",finalDir);
+            int[][] board = compare(PathUtil.SRC_PIECES,finalDir);
             int[][] target = new int[][]{{0,1,2}, {3,4,5},{6,7,8}};
-            int whitePos = findTheWhite("D:/testImg/src");
+            int whitePos = findTheWhite(PathUtil.SRC_PIECES);
             System.out.println("whitePos = " + whitePos);
-            boolean[] flag = new boolean[9];
             // 0+1+2+..+8 = 36 36-1=35
             int sum = 0;
             for (int i = 0; i < 3; i++) {
@@ -87,7 +86,7 @@ public class TagMaking {
      * @throws IOException
      */
     public static int findTheWhite(String src) throws Exception {
-        String whitePath = "D:/testImg/white.jpg";
+        String whitePath = PathUtil.WHITE_PIC;
         String[] srcPieces = new File(src).list();
         FingerPrint fp1 = new FingerPrint(ImageIO.read(new File(whitePath)));
         FingerPrint fp2 = null;

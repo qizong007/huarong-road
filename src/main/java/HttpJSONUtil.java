@@ -48,7 +48,6 @@ public class HttpJSONUtil {
         connection.connect();
         DataOutputStream out = new DataOutputStream(connection
                 .getOutputStream());
-        // String content = "";//"key=j0r53nmbbd78x7m1pqml06u2&type=1&toemail=cngolon@gmail.com" + "&activatecode=" + URLEncoder.encode("中国聚龙", "utf-8");
         // DataOutputStream.writeBytes将字符串中的16位的unicode字符以8位的字符形式写道流里面
         out.writeBytes(params);
         out.flush();

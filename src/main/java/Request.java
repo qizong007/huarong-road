@@ -11,7 +11,7 @@ public class Request {
 
     /**
      * json请求图片
-     * @param url "http://47.102.118.1:8089/api/problem?stuid=111800827"
+     * @param url PathUtil.REQUEST_URL
      */
     public static void requestForTheImg(String url){
         try {
@@ -20,7 +20,7 @@ public class Request {
             step = subject.getStep();
             swap = subject.getSwap();
             uuid = subject.getUuid();
-            if(FileTypeTranslate.generateImage(subject.getImg(),"D:/testImg/test.jpg")){
+            if(FileTypeTranslate.generateImage(subject.getImg(),PathUtil.REQUEST_PIC)){
                 System.out.println("JSON请求图片成功!!!");
                 return;
             }

@@ -5,18 +5,16 @@ import java.io.IOException;
 public class ImgCompetition {
 
     /**
-     *
+     * 两组图片的比较
      * @param src "D:/testImg/src"
      * @param target "D:/testImg/target1-36"
      */
-    public static float compare1v1(String src,String target) throws IOException {
+    public static boolean compare1v1(String src,String target) throws IOException {
 
         String[] srcPieces = new File(src).list();
         String[] targetPieces = new File(target).list();
         FingerPrint fp1 = null;
         FingerPrint fp2 = null;
-        float[] ans = new float[9];
-        int cnt=0;
 
         for (String srcPiece : srcPieces){
             float max = 0;
@@ -28,15 +26,12 @@ public class ImgCompetition {
                     max = res;
                 }
             }
-            ans[cnt++] = max;
+            if(max < 1){
+                return false;
+            }
         }
 
-        float sum = 0;
-        for(int i=0;i<9;i++){
-             sum += ans[i];
-        }
-
-        return sum/9;
+        return true;
 
     }
 
@@ -51,8 +46,7 @@ public class ImgCompetition {
         String finalFile="";
 
         for(int i=1;i<=36;i++){
-            ans[i-1] = compare1v1(src,target+i);
-            if(ans[i-1] == 1){
+            if(compare1v1(src,target+i)){
                 System.out.println(target+i);
                 finalFile = target+i;
                 break;

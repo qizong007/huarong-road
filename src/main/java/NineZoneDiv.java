@@ -16,8 +16,6 @@ public class NineZoneDiv {
      */
     public static void split(String scrImageFile,String targetDir){
 
-        //String scrImageFile = "D:/testImg/test.jpg";
-        //String targetDir = "D:/testImg/src/";
         File targetDec = new File(targetDir);
         targetDec.mkdir();
         BufferedImage img = null;
