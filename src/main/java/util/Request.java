@@ -45,7 +45,11 @@ public class Request {
      */
     public static void requestForMyScore(AnswerPoster answerPoster) throws IOException {
         MyScore myScore = JSON.parseObject(submitAnswer(answerPoster),MyScore.class);
-        System.out.println(myScore);
+        if(myScore.isScore()){
+            System.out.println("挑战成功！用时："+myScore.getTime());
+        } else {
+            System.err.println("挑战失败...");
+        }
     }
 }
 

@@ -20,23 +20,37 @@ public final class FingerPrint {
     /**
      * 保存图像指纹的二值化矩阵
      */
-    private final byte[] binaryzationMatrix;
+    public final byte[] binaryzationMatrix;
+
+    /**
+     * 构造器
+     * @param hashValue
+     */
     public FingerPrint(byte[] hashValue) {
         if(hashValue.length!=HASH_SIZE*HASH_SIZE)
             throw new IllegalArgumentException(String.format("length of hashValue must be %d",HASH_SIZE*HASH_SIZE ));
         this.binaryzationMatrix=hashValue;
     }
+
     public FingerPrint(String hashValue) {
         this(toBytes(hashValue));
     }
+
     public FingerPrint (BufferedImage src){
         this(hashValue(src));
     }
+
+    /**
+     * 哈希转换
+     * @param src
+     * @return
+     */
     private static byte[] hashValue(BufferedImage src){
         BufferedImage hashImage = resize(src,HASH_SIZE,HASH_SIZE);
         byte[] matrixGray = (byte[]) toGray(hashImage).getData().getDataElements(0, 0, HASH_SIZE, HASH_SIZE, null);
         return  binaryzation(matrixGray);
     }
+
     /**
      * 从压缩格式指纹创建{@link FingerPrint}对象
      * @param compactValue
@@ -256,13 +270,14 @@ public final class FingerPrint {
             throw new IllegalArgumentException("length of hashValue is mismatch");
         return compare(binaryzationMatrix,src.binaryzationMatrix);
     }
+
     /**
      * 判断两个数组相似度，数组长度必须一致否则抛出异常
      * @param f1
      * @param f2
      * @return 返回相似度(0.0~1.0)
      */
-    private static float compare(byte[] f1,byte[] f2){
+    public static float compare(byte[] f1,byte[] f2){
         if(f1.length!=f2.length)
             throw new IllegalArgumentException("mismatch util.FingerPrint length");
         int sameCount=0;

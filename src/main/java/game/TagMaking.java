@@ -16,19 +16,23 @@ public class TagMaking {
      * @throws Exception
      */
     public static void initAndPlay() throws Exception {
+
+        //初始化
+        ImgCompetition.init();
+
         // 请求图片
         Subject requestJSON = Request.requestForTheImg(PathUtil.GET_URL);
 
         // 切割请求来的图片
         NineZoneDiv.split(PathUtil.REQUEST_PIC,PathUtil.SRC_PIECES+"/");
-        String finalDir = ImgCompetition.pickTheOne(PathUtil.SRC_PIECES,PathUtil.TARGET_PIECES);
+        String finalDir = ImgCompetition.pickTheOneOnInit(PathUtil.SRC_PIECES,PathUtil.TARGET_PIECES);
 
         // 图片识别与对比
         if(finalDir != null){
             int[][] board = compare(PathUtil.SRC_PIECES,finalDir);
             int[][] target = new int[][]{{0,1,2}, {3,4,5},{6,7,8}};
             int whitePos = findTheWhite(PathUtil.SRC_PIECES);
-            System.out.println("whitePos = " + whitePos);
+            //System.out.println("whitePos = " + whitePos);
 
             // 0+1+2+..+8 = 36 36-1=35
             int sum = 0;
@@ -38,7 +42,7 @@ public class TagMaking {
                 }
             }
             board[whitePos/3][whitePos%3] = 35 - sum;
-            System.out.println("挖掉的是原图的第"+board[whitePos/3][whitePos%3]+"张");
+            //System.out.println("挖掉的是原图的第"+board[whitePos/3][whitePos%3]+"张");
             int white = board[whitePos/3][whitePos%3];
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
@@ -58,14 +62,14 @@ public class TagMaking {
             }
             Game game = new Game();
             int ans = game.slidingPuzzle(board,target);
-            System.out.println(ans);
             if(ans != -1){
-                System.out.println(game.op);
+                System.out.println(game.op+",共"+ans+"步");
                 String uuid = requestJSON.getUuid();
                 Answer answer = new Answer(game.op,requestJSON.getSwap());
                 AnswerPoster answerPoster = new AnswerPoster(uuid,answer);
-                System.out.println(answerPoster);
                 Request.requestForMyScore(answerPoster);
+            }else{
+                System.err.println("算法GG了！");
             }
         }
     }
@@ -93,10 +97,10 @@ public class TagMaking {
                     int y = srcPiece.charAt(2)-'0';
                     if(ReadColor.getImagePixel(src+"/"+srcPiece) == ReadColor.getImagePixel(target+"/"+targetPieces[i])){
                         board[x][y] = i;
-                        System.out.printf("(%d,%d)设为%d\n",x,y,i);
+                        //System.out.printf("(%d,%d)设为%d\n",x,y,i);
                     }else{
                         board[x][y] = -1;
-                        System.out.printf("(%d,%d)设为-1\n",x,y);
+                        //System.out.printf("(%d,%d)设为-1\n",x,y);
                     }
                 }
             }

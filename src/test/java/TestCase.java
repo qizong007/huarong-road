@@ -5,17 +5,10 @@ import util.*;
 
 import javax.imageio.ImageIO;
 import java.io.File;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestCase {
-
-    /**
-     * JSON请求测试
-     */
-    @Test
-    public void testForGET(){
-        Request.requestForTheImg(PathUtil.GET_URL);
-    }
 
     /**
      * 数组游戏模拟
@@ -30,52 +23,12 @@ public class TestCase {
     }
 
     /**
-     * 切割全部文件
-     */
-    @Test
-    public void testForSplitAll() {
-        NineZoneDiv.spiltAll(PathUtil.ORG_PICS,PathUtil.TARGET_PIECES);
-    }
-
-    @Test
-    public void testForPickTheOne(){
-        try {
-            ImgCompetition.pickTheOne(PathUtil.SRC_PIECES,PathUtil.TARGET_PIECES);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 请求JSON图片 + 切割 + 图片识别 + 模拟游戏（无swap）
+     * 请求JSON图片 + 切割 + 图片识别 + 模拟游戏
      */
     @Test
     public void playWithPic() throws Exception {
         for (int i = 0; i < 5; i++) {
             TagMaking.initAndPlay();
-        }
-    }
-
-    /**
-     * 测试文件夹内文件名
-     */
-    @Test
-    public void testForDirFileName(){
-        String[] srcPieces = new File(PathUtil.SRC_PIECES).list();
-        for(String str : srcPieces){
-            System.out.println(str);
-        }
-    }
-
-    /**
-     * 寻找白色图片
-     */
-    @Test
-    public void testForFindTheWhite() throws Exception {
-        try {
-            System.out.println(TagMaking.findTheWhite(PathUtil.SRC_PIECES));
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
