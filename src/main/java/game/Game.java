@@ -7,7 +7,8 @@ import java.util.*;
  */
 public class Game {
 
-    public String op="";
+    public String op = null;
+    public int swap[] = new int[2];
 
     private int[][] shuffle(Node node,int[] swap){
         int[][] board = new int[3][3];
@@ -33,7 +34,9 @@ public class Game {
      * @return 步数
      */
     public int slidingPuzzle(int[][] board,int[][] targetInt,int step,int[] swap) {
+        System.out.println("在第"+step+"步交换");
         int R = board.length, C = board[0].length;
+        this.swap = swap;
         int sr = 0, sc = 0;
         search:
         for (sr = 0; sr < R; sr++)
@@ -62,8 +65,9 @@ public class Game {
                 if(stepCnt == step){
                     Game newGame = new Game();
                     int temp = newGame.slidingPuzzle(shuffle(node,swap),targetInt);
-                    // 洗完牌无解
+                    // 交换后无解
                     if(temp == -1){
+                        System.out.println("交换后无解");
                         break readyToShuffle;
                     }else{
                         this.op = newGame.op;
@@ -167,7 +171,7 @@ public class Game {
             Node node = queue.remove();
 
             if (node.boardstring.equals(target)){
-                op = node.operations.toString();
+                this.op = node.operations.toString();
                 return node.depth;
             }
 

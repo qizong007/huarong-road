@@ -15,7 +15,7 @@ public class TagMaking {
      * 初始化 + 模拟
      * @throws Exception
      */
-    public static void initAndPlay() throws Exception {
+    public static boolean initAndPlay() throws Exception {
 
         //初始化
         ImgCompetition.init();
@@ -61,17 +61,22 @@ public class TagMaking {
                 }
             }
             Game game = new Game();
-            int ans = game.slidingPuzzle(board,target);
+            int ans = game.slidingPuzzle(board,target,requestJSON.getStep(),requestJSON.getSwap());
+            //int ans = game.slidingPuzzle(board,target);
             if(ans != -1){
                 System.out.println(game.op+",共"+ans+"步");
                 String uuid = requestJSON.getUuid();
                 Answer answer = new Answer(game.op,requestJSON.getSwap());
+                //Answer answer = new Answer(game.op,game.swap);
                 AnswerPoster answerPoster = new AnswerPoster(uuid,answer);
-                Request.requestForMyScore(answerPoster);
+                boolean f = Request.requestForMyScore(answerPoster);
             }else{
                 System.err.println("算法GG了！");
+                return false;
             }
+            return true;
         }
+        return false;
     }
 
     /**

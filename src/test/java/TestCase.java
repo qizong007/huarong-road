@@ -5,8 +5,6 @@ import util.*;
 
 import javax.imageio.ImageIO;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TestCase {
 
@@ -27,9 +25,13 @@ public class TestCase {
      */
     @Test
     public void playWithPic() throws Exception {
-        for (int i = 0; i < 5; i++) {
-            TagMaking.initAndPlay();
+        int cnt=0;
+        for (int i = 0; i < 100; i++) {
+            if(TagMaking.initAndPlay()){
+                cnt++;
+            }
         }
+        System.out.println("成功率"+cnt+"/100");
     }
 
     /**
