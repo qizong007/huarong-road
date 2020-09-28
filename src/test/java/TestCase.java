@@ -25,13 +25,22 @@ public class TestCase {
      */
     @Test
     public void playWithPic() throws Exception {
+        TagMaking.initAndPlay();
+    }
+
+    /**
+     * 100次：请求JSON图片 + 切割 + 图片识别 + 模拟游戏
+     */
+    @Test
+    public void playWithPic100() throws Exception {
         int cnt=0;
-        for (int i = 0; i < 100; i++) {
+        int round = 10;
+        for (int i = 0; i < round; i++) {
             if(TagMaking.initAndPlay()){
                 cnt++;
             }
         }
-        System.out.println("成功率"+cnt+"/100");
+        System.out.println("成功率:"+(float)cnt/round);
     }
 
     /**

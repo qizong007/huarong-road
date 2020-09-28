@@ -61,22 +61,42 @@ public class TagMaking {
                 }
             }
             Game game = new Game();
-            int ans = game.slidingPuzzle(board,target,requestJSON.getStep(),requestJSON.getSwap());
+            int ans = game.slidingPuzzle(board,target,requestJSON.getStep(),requestJSON.getSwap(),false);
             //int ans = game.slidingPuzzle(board,target);
+            boolean f;
             if(ans != -1){
-                System.out.println(game.op+",共"+ans+"步");
-                String uuid = requestJSON.getUuid();
-                Answer answer = new Answer(game.op,requestJSON.getSwap());
-                //Answer answer = new Answer(game.op,game.swap);
-                AnswerPoster answerPoster = new AnswerPoster(uuid,answer);
-                boolean f = Request.requestForMyScore(answerPoster);
+                // 答案一遍过
+                f = processAnswer(game,ans,requestJSON);
             }else{
-                System.err.println("算法GG了！");
-                return false;
+                // 答案没过，再开一把穷举交换版
+                Game newGame = new Game();
+                ans = newGame.slidingPuzzle(board,target,requestJSON.getStep(),requestJSON.getSwap(),true);
+                if(ans == -1){
+                    System.err.println("穷举了还是算不出...");
+                    return false;
+                }
+                f = processAnswer(newGame,ans,requestJSON);
+                if(!f){ return false; }
             }
             return true;
         }
         return false;
+    }
+
+    /**
+     * 处理答案
+     * @param game
+     * @param ans
+     * @param requestJSON
+     * @return
+     * @throws IOException
+     */
+    private static boolean processAnswer(Game game,int ans,Subject requestJSON) throws IOException {
+        System.out.println(game.op+",共"+ans+"步");
+        String uuid = requestJSON.getUuid();
+        Answer answer = new Answer(game.op,requestJSON.getSwap());
+        AnswerPoster answerPoster = new AnswerPoster(uuid,answer);
+        return Request.requestForMyScore(answerPoster);
     }
 
     /**

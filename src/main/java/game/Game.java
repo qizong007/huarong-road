@@ -12,9 +12,12 @@ public class Game {
 
     private int[][] shuffle(Node node,int[] swap){
         int[][] board = new int[3][3];
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                board[i][j] = node.boardstring.charAt(i*3+j) - '0';
+        int offset=0;
+        for (int i = 0; i < node.boardstring.length(); i++) {
+            char c = node.boardstring.charAt(i);
+            if(c >= '0' && c <= '9'){
+                board[offset/3][offset%3] = c - '0';
+                offset++;
             }
         }
         int swap1 = swap[0]-1;
@@ -22,19 +25,36 @@ public class Game {
         int t = board[swap1/3][swap1%3];
         board[swap1/3][swap1%3] = board[swap2/3][swap2%3];
         board[swap2/3][swap2%3] = t;
+        //outputBoard(board);
         return board;
     }
 
     /**
-     * 模拟游戏（带swap）
+     * 输出游戏状态
+     */
+    private void outputBoard(int[][] board){
+        System.out.println("------------");
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                System.out.print(board[i][j]+" ");
+            }
+            System.out.println();
+        }
+        System.out.println("------------");
+    }
+
+    /**
+     * 模拟游戏（简易swap）
      * @param board
      * @param targetInt
      * @param step
      * @param swap
      * @return 步数
      */
-    public int slidingPuzzle(int[][] board,int[][] targetInt,int step,int[] swap) {
-        System.out.println("在第"+step+"步交换");
+    public int slidingPuzzle(int[][] board,int[][] targetInt,int step,int[] swap,boolean again) {
+        System.out.println("在第"+step+"步交换"+swap[0]+"和"+swap[1]);
+        System.out.println("初始状态：");
+        outputBoard(board);
         int R = board.length, C = board[0].length;
         this.swap = swap;
         int sr = 0, sc = 0;
@@ -54,24 +74,59 @@ public class Game {
 
         String target = Arrays.deepToString(targetInt);
 
-        int stepCnt = 0;
         while (!queue.isEmpty()) {
 
             Node node = queue.remove();
 
             // FIXME:swap
-            stepCnt++;
             readyToShuffle:{
-                if(stepCnt == step){
+                if(node.depth+1 == step){
+                    System.out.println("（准备交换）当前状态："+node.boardstring);
                     Game newGame = new Game();
-                    int temp = newGame.slidingPuzzle(shuffle(node,swap),targetInt);
+                    int[][] swapBoard = shuffle(node,swap);
+                    outputBoard(swapBoard);
+                    int temp = newGame.slidingPuzzle(swapBoard,targetInt);
                     // 交换后无解
                     if(temp == -1){
                         System.out.println("交换后无解");
-                        break readyToShuffle;
+                        if(again){
+                            Node newNode = new Node(swapBoard,node.zero_r,node.zero_c,node.depth,node.operations);
+                            int[] recordSwap = new int[2];
+                            Game afterRoundGame = null;
+                            trap:{
+                                for(int i=1;i<=8;i++){
+                                    for(int j=i+1;j<=9;j++){
+                                        afterRoundGame = null;// avoid memory leak
+                                        afterRoundGame = new Game();
+                                        int[][] shuffledBord = shuffle(newNode,new int[]{i,j});
+                                        outputBoard(shuffledBord);
+                                        temp = afterRoundGame.slidingPuzzle(shuffledBord,targetInt);
+                                        if(temp != -1){
+                                            recordSwap[0] = i;
+                                            recordSwap[1] = j;
+                                            break trap;
+                                        }
+                                    }
+                                }
+                            }
+                            // trap 出来
+                            if(temp != -1){
+                                this.swap = recordSwap;
+                                System.out.println(newNode.operations);
+                                System.out.println(afterRoundGame.op);
+                                this.op = newNode.operations + afterRoundGame.op;
+                                System.err.println("成功啦啦啦啦！");
+                            }
+                            return newNode.depth + temp;
+                        }else{
+                            break readyToShuffle;
+                        }
                     }else{
-                        this.op = newGame.op;
-                        return temp;
+                        System.out.println("交换后竟然有解！");
+                        System.out.println(node.operations);
+                        System.out.println(newGame.op);
+                        this.op = node.operations + newGame.op;
+                        return node.depth + temp;
                     }
                 }
             }
@@ -264,5 +319,3 @@ public class Game {
 
     }
 }
-
-
