@@ -61,23 +61,15 @@ public class TagMaking {
                 }
             }
             Game game = new Game();
-            int ans = game.slidingPuzzle(board,target,requestJSON.getStep(),requestJSON.getSwap(),false);
-            //int ans = game.slidingPuzzle(board,target);
+            int ans = game.slidingPuzzle(board,target,requestJSON.getStep(),requestJSON.getSwap());
             boolean f;
             if(ans != -1){
-                // 答案一遍过
                 f = processAnswer(game,ans,requestJSON);
             }else{
-                // 答案没过，再开一把穷举交换版
-                Game newGame = new Game();
-                ans = newGame.slidingPuzzle(board,target,requestJSON.getStep(),requestJSON.getSwap(),true);
-                if(ans == -1){
-                    System.err.println("穷举了还是算不出...");
-                    return false;
-                }
-                f = processAnswer(newGame,ans,requestJSON);
-                if(!f){ return false; }
+                System.err.println("穷举了还是算不出...");
+                return false;
             }
+            if(!f){ return false; }
             return true;
         }
         return false;
@@ -94,7 +86,7 @@ public class TagMaking {
     private static boolean processAnswer(Game game,int ans,Subject requestJSON) throws IOException {
         System.out.println(game.op+",共"+ans+"步");
         String uuid = requestJSON.getUuid();
-        Answer answer = new Answer(game.op,requestJSON.getSwap());
+        Answer answer = new Answer(game.op,game.swap);
         AnswerPoster answerPoster = new AnswerPoster(uuid,answer);
         return Request.requestForMyScore(answerPoster);
     }
