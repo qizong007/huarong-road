@@ -1,5 +1,6 @@
 import game.Game;
 import game.TagMaking;
+import org.junit.Assert;
 import org.junit.Test;
 import util.*;
 
@@ -34,7 +35,7 @@ public class TestCase {
     @Test
     public void playWithPic100() throws Exception {
         int cnt=0;
-        int round = 10;
+        int round = 100;
         for (int i = 0; i < round; i++) {
             if(TagMaking.initAndPlay()){
                 cnt++;

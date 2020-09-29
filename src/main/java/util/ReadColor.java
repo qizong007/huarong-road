@@ -13,7 +13,7 @@ public class ReadColor {
      * @throws Exception
      */
     public static int getImagePixel(String image) throws Exception {
-        int[] rgb = new int[3];
+        int rgb = 0;
         File file = new File(image);
         BufferedImage bi = null;
         try {
@@ -21,8 +21,13 @@ public class ReadColor {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        int pixel = bi.getRGB(0, 0);
-        rgb[2] = (pixel & 0xff);
-        return rgb[2];
+        //int h = bi.getHeight();
+        //int w = bi.getWidth();
+        int pixel;
+        for (int i = 0; i < 10; i++) {
+            pixel = bi.getRGB(i, i);
+            rgb += (pixel & 0xff);
+        }
+        return rgb;
     }
 }

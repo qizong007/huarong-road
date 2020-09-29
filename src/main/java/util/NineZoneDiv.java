@@ -46,7 +46,7 @@ public class NineZoneDiv {
             }
         }
 
-        System.out.println("九宫格切割完成");
+        //System.out.println("九宫格切割完成");
     }
 
     /**

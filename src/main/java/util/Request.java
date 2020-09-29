@@ -17,10 +17,10 @@ public class Request {
         try {
             Subject subject = JSON.parseObject(HttpJSONUtil.readContentFromGet(url),Subject.class);
             if(FileTypeTranslate.generateImage(subject.getImg(),PathUtil.REQUEST_PIC)){
-                System.out.println("JSON请求图片成功!!!");
+                //System.out.println("JSON请求图片成功!!!");
                 return subject;
             }
-            System.out.println("JSON请求图片失败...");
+            System.err.println("JSON请求图片失败...");
         } catch (IOException e) {
             e.printStackTrace();
         }

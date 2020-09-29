@@ -81,7 +81,7 @@ public class Game {
             Node node = queue.remove();
 
             // FIXME:swap
-            if(node.depth+1 == step){
+            if(node.depth == step){
                 //System.out.println("（准备交换）当前状态："+node.boardstring);
                 Game newGame = new Game();
                 int[][] swapBoard = shuffle(node,swap);
@@ -89,38 +89,33 @@ public class Game {
                 int temp = newGame.slidingPuzzle(swapBoard,targetInt);
                 // 交换后无解
                 if(temp == -1){
-                    System.out.println("交换后无解");
+                    //System.out.println("交换后无解");
                     Node newNode = new Node(swapBoard,node.zero_r,node.zero_c,node.depth,node.operations);
                     int[] recordSwap = new int[2];
                     Game afterRoundGame = null;
-                    trap:{
-                        System.out.println("再开一把了");
-                        for(int i=1;i<=8;i++){
-                            for(int j=i+1;j<=9;j++){
-                                afterRoundGame = null;// avoid memory leak
-                                afterRoundGame = new Game();
-                                int[][] shuffledBord = shuffle(newNode,new int[]{i,j});
-                                //outputBoard(shuffledBord);
-                                temp = afterRoundGame.slidingPuzzle(shuffledBord,targetInt);
-                                if(temp != -1){
-                                    recordSwap[0] = i;
-                                    recordSwap[1] = j;
-                                    break trap;
-                                }
+                    //System.out.println("再开一把了");
+                    for(int i=1;i<=8;i++){
+                        for(int j=i+1;j<=9;j++){
+                            afterRoundGame = null;// avoid memory leak
+                            afterRoundGame = new Game();
+                            int[][] shuffledBord = shuffle(newNode,new int[]{i,j});
+                            //outputBoard(shuffledBord);
+                            temp = afterRoundGame.slidingPuzzle(shuffledBord,targetInt);
+                            if(temp != -1){
+                                recordSwap[0] = i;
+                                recordSwap[1] = j;
+                                this.swap = recordSwap;
+                                //System.out.println(newNode.operations);
+                                //System.out.println(afterRoundGame.op);
+                                this.op = newNode.operations + afterRoundGame.op;
+                                //System.out.println("成功啦啦啦啦！");
+                                return newNode.depth + temp;
                             }
                         }
                     }
-                    // trap 出来
-                    if(temp != -1){
-                        this.swap = recordSwap;
-                        System.out.println(newNode.operations);
-                        System.out.println(afterRoundGame.op);
-                        this.op = newNode.operations + afterRoundGame.op;
-                        System.err.println("成功啦啦啦啦！");
-                    }
-                    return newNode.depth + temp;
+                    return temp;
                 }else{
-                    System.out.println("交换后竟然有解！");
+                    //System.out.println("交换后竟然有解！");
                     //System.out.println(node.operations);
                     //System.out.println(newGame.op);
                     this.op = node.operations + newGame.op;
