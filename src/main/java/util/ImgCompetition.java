@@ -6,12 +6,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 空间换时间
+ */
 public class ImgCompetition {
 
     public static List<byte[][]> picBytes = new ArrayList<>();;
 
     /**
-     * 初始化36张图其中一张图的byte数组
+     * 初始化：将一张图片转化为均值哈希的byte数组
      * @param target "D:/testImg/targetX"
      * @throws IOException
      */
@@ -69,7 +72,7 @@ public class ImgCompetition {
     }
 
     /**
-     * 两组图片的比较（在初始化的情况下）
+     * 两组图片的比较（在初始化的情况下，通过byte[]比较）
      * @param src "D:/testImg/src"
      * @param target "D:/testImg/target1-36"
      * @param index picBytes的索引
@@ -99,7 +102,7 @@ public class ImgCompetition {
     }
 
     /**
-     *
+     * 图片匹配，查找与第几张相同
      * @param src "D:/testImg/src"
      * @param target "D:/testImg/target"
      */
@@ -119,7 +122,7 @@ public class ImgCompetition {
     }
 
     /**
-     *
+     * 图片匹配，查找与第几张相同（在初始化的情况下，通过byte[]比较）
      * @param src "D:/testImg/src"
      * @param target "D:/testImg/target"
      */

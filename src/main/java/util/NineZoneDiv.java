@@ -10,16 +10,16 @@ import javax.imageio.ImageIO;
  */
 public class NineZoneDiv {
 
-    /*
-     * imageIO或者fileIO能够读取图像
-     * BufferedImage创建一个实际的图像缓冲区,可以直接操作像素
-     * bufferedImage.getSbuImage返回由指定矩形区域定义的子图像。
-     * 返回的 BufferedImage 与源图像共享相同的数据数组。
+    /**
+     * 切割单张图片
+     * @param scrImageFile 原图片路径
+     * @param targetDir 目标路径
      */
     public static void split(String scrImageFile,String targetDir){
 
         File targetDec = new File(targetDir);
         targetDec.mkdir();
+        // BufferedImage创建一个实际的图像缓冲区,可以直接操作像素
         BufferedImage img = null;
         BufferedImage scrImage = null;
         try {
@@ -35,6 +35,7 @@ public class NineZoneDiv {
         String fileName = null;
         for(int i = 0; i < 3; i++){
             for(int j = 0; j < 3; j++){
+                // getSbuImage返回由指定矩形区域定义的子图像
                 img = scrImage.getSubimage(j * divWidth, i * divHeight, divWidth, divHeight);
                 fileName = targetDir + i + "_" + j + ".jpg";   //文件名
                 File file = new File(fileName);
@@ -45,12 +46,11 @@ public class NineZoneDiv {
                 }
             }
         }
-
         //System.out.println("九宫格切割完成");
     }
 
     /**
-     *
+     * 切割文件夹下全部图片
      * @param scrImageDec "D:/testImg/org"
      * @param targetDir "D:/testImg/target"
      */

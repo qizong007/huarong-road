@@ -1,5 +1,5 @@
 import game.Game;
-import game.TagMaking;
+import game.Play;
 import org.junit.Assert;
 import org.junit.Test;
 import util.*;
@@ -26,7 +26,7 @@ public class TestCase {
      */
     @Test
     public void playWithPic() throws Exception {
-        TagMaking.initAndPlay();
+        Assert.assertTrue(Play.initAndPlay());
     }
 
     /**
@@ -37,7 +37,7 @@ public class TestCase {
         int cnt=0;
         int round = 100;
         for (int i = 0; i < round; i++) {
-            if(TagMaking.initAndPlay()){
+            if(Play.initAndPlay()){
                 cnt++;
             }
         }

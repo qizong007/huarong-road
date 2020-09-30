@@ -9,21 +9,7 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 
-public class TagMaking {
-
-    /**
-     * 输出游戏状态
-     */
-    private static void outputBoard(int[][] board){
-        System.out.println("------------");
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                System.out.print(board[i][j]+" ");
-            }
-            System.out.println();
-        }
-        System.out.println("------------");
-    }
+public class Play {
 
     /**
      * 初始化 + 模拟
@@ -31,7 +17,7 @@ public class TagMaking {
      */
     public static boolean initAndPlay() throws Exception {
 
-        //初始化
+        // 初始化，把图片转成内存中的byte[]
         ImgCompetition.init();
 
         // 请求图片
@@ -43,48 +29,18 @@ public class TagMaking {
 
         // 图片识别与对比
         if(finalDir != null){
-            int[][] board = compare(PathUtil.SRC_PIECES,finalDir);
+            int[][] board = ImgToNumArray(PathUtil.SRC_PIECES,finalDir);
             int[][] target = new int[][]{{0,1,2}, {3,4,5},{6,7,8}};
-            //System.out.println("board:");
-            //outputBoard(board);
-            int whitePos = findTheWhite(PathUtil.SRC_PIECES);
-            //System.out.println("whitePos = " + whitePos);
 
-            // 0+1+2+..+8 = 36 36-1=35
-            int sum = 0;
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3; j++) {
-                    sum += board[i][j];
-                }
-            }
-            board[whitePos/3][whitePos%3] = 35 - sum;
-            int white = board[whitePos/3][whitePos%3];
-            //System.out.println("挖掉的是原图的第"+white+"张");
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3; j++) {
-                    if(board[i][j] < white){
-                        board[i][j]++;
-                    }
-                    else if(board[i][j] == white){
-                        board[i][j] = 0;
-                    }
-                    if(target[i][j] < white){
-                        target[i][j]++;
-                    }
-                    else if(target[i][j] == white){
-                        target[i][j] = 0;
-                    }
-                }
-            }
+            matrixAdjust(board,target,findTheWhite(PathUtil.SRC_PIECES));
+
             Game game = new Game();
-            //outputBoard(target);
             int ans = game.slidingPuzzle(board,target,requestJSON.getStep(),requestJSON.getSwap());
             boolean f;
             if(ans != -1){
                 f = processAnswer(game,ans,requestJSON);
             }else{
-                System.err.println("穷举了还是算不出...");
-                throw new Exception("是不是有2个0？？");
+                throw new Exception("检查一下game里的矩阵是不是有2个0？？");
                 //return false;
             }
             if(!f){ return false; }
@@ -110,11 +66,11 @@ public class TagMaking {
     }
 
     /**
-     *
+     * 图片数组化
      * @param src "D:/testImg/src"
      * @param target "D:/testImg/target1-36"
      */
-    private static int[][] compare(String src,String target) throws Exception {
+    private static int[][] ImgToNumArray(String src,String target) throws Exception {
 
         String[] srcPieces = new File(src).list();
         String[] targetPieces = new File(target).list();
@@ -145,12 +101,47 @@ public class TagMaking {
     }
 
     /**
+     * 矩阵调整：空白-1转0，其他小于全白的上调1
+     * @param board
+     * @param target
+     * @param whitePos
+     */
+    private static void matrixAdjust(int[][] board,int[][] target,int whitePos){
+        // 0+1+2+..+8 = 36 36-1=35
+        int sum = 0;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                sum += board[i][j];
+            }
+        }
+        board[whitePos/3][whitePos%3] = 35 - sum;
+        int white = board[whitePos/3][whitePos%3];
+        //System.out.println("挖掉的是原图的第"+white+"张");
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if(board[i][j] < white){
+                    board[i][j]++;
+                }
+                else if(board[i][j] == white){
+                    board[i][j] = 0;
+                }
+                if(target[i][j] < white){
+                    target[i][j]++;
+                }
+                else if(target[i][j] == white){
+                    target[i][j] = 0;
+                }
+            }
+        }
+    }
+
+    /**
      * 找到空白图片
      * @param src src文件夹路径 "D:/testImg/src"
      * @return src中的第几张图片
      * @throws IOException
      */
-    public static int findTheWhite(String src) throws Exception {
+    private static int findTheWhite(String src) throws Exception {
         String whitePath = PathUtil.WHITE_PIC;
         String[] srcPieces = new File(src).list();
         FingerPrint fp1 = new FingerPrint(ImageIO.read(new File(whitePath)));

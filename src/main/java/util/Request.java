@@ -10,14 +10,14 @@ import java.io.IOException;
 public class Request {
 
     /**
-     * json请求图片
+     * 获得json请求来的图片
      * @param url util.PathUtil.REQUEST_URL
+     * @return 返回题目对象
      */
     public static Subject requestForTheImg(String url){
         try {
             Subject subject = JSON.parseObject(HttpJSONUtil.readContentFromGet(url),Subject.class);
             if(FileTypeTranslate.generateImage(subject.getImg(),PathUtil.REQUEST_PIC)){
-                //System.out.println("JSON请求图片成功!!!");
                 return subject;
             }
             System.err.println("JSON请求图片失败...");
@@ -28,7 +28,7 @@ public class Request {
     }
 
     /**
-     * 提交答案
+     * 通过POST请求提交答案
      * @param answerPoster 答案提交
      * @return 返回成绩字符串
      * @throws IOException
@@ -39,7 +39,7 @@ public class Request {
     }
 
     /**
-     * 打印成绩
+     * 获取成绩对象，并打印
      * @param answerPoster 答案提交
      * @throws IOException
      */

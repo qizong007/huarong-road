@@ -7,12 +7,12 @@ import java.io.File;
 public class ReadColor {
 
     /**
-     * 获得第一个像素点的RGB
+     * 获得(0,0)到(9,9)像素点的RGB
      * @param image 图片路径
-     * @return 返回RGB值
+     * @return 返回RGB值的和
      * @throws Exception
      */
-    public static int getImagePixel(String image) throws Exception {
+    public static int getImagePixel(String image){
         int rgb = 0;
         File file = new File(image);
         BufferedImage bi = null;
@@ -21,8 +21,6 @@ public class ReadColor {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //int h = bi.getHeight();
-        //int w = bi.getWidth();
         int pixel;
         for (int i = 0; i < 10; i++) {
             pixel = bi.getRGB(i, i);
@@ -30,4 +28,5 @@ public class ReadColor {
         }
         return rgb;
     }
+
 }

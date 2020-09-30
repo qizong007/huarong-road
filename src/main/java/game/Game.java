@@ -1,7 +1,5 @@
 package game;
 
-import entity.Subject;
-
 import java.util.*;
 
 /**
@@ -9,9 +7,17 @@ import java.util.*;
  */
 public class Game {
 
+    // 此局游戏的操作串
     public String op = null;
+    // 此局游戏的交换swap数组
     public int swap[] = new int[2];
 
+    /**
+     * 交换，游戏刷新
+     * @param node
+     * @param swap
+     * @return
+     */
     private int[][] shuffle(Node node,int[] swap){
         int[][] board = new int[3][3];
         int offset=0;
@@ -32,21 +38,22 @@ public class Game {
     }
 
     /**
-     * 输出游戏状态
+     * 输出游戏当前状态，测试用
+     * @param board
      */
     private void outputBoard(int[][] board){
-        System.out.println("------------");
+        System.out.println("-------");
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 System.out.print(board[i][j]+" ");
             }
             System.out.println();
         }
-        System.out.println("------------");
+        System.out.println("-------");
     }
 
     /**
-     * 模拟游戏（简易swap）
+     * 模拟游戏（含swap）
      * @param board
      * @param targetInt
      * @param step
@@ -80,7 +87,6 @@ public class Game {
 
             Node node = queue.remove();
 
-            // FIXME:swap
             if(node.depth == step){
                 //System.out.println("（准备交换）当前状态："+node.boardstring);
                 Game newGame = new Game();
@@ -283,7 +289,7 @@ public class Game {
     }
 
     /**
-     * 初始版本
+     * 初始测试游戏版本
      * @param board 游戏开局
      * @return 步数
      */
@@ -291,6 +297,9 @@ public class Game {
         return slidingPuzzle(board,new int[][]{{1,2,3}, {4,5,6},{7,8,0}});
     }
 
+    /**
+     * 静态内部类：Node，记录当前游戏状态
+     */
     static class Node {
 
         int[][] board;

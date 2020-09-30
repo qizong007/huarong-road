@@ -1,5 +1,8 @@
 package util;
 
+/**
+ * 路径常量
+ */
 public class PathUtil {
 
     public static final String GET_URL = "http://47.102.118.1:8089/api/problem?stuid=111800827";
