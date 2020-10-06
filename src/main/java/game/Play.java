@@ -15,10 +15,7 @@ public class Play {
      * 初始化 + 模拟
      * @throws Exception
      */
-    public static boolean initAndPlay() throws Exception {
-
-        // 初始化，把图片转成内存中的byte[]
-        ImgCompetition.init();
+    public static boolean play() throws Exception {
 
         // 请求图片
         Subject requestJSON = Request.requestForTheImg(PathUtil.GET_URL);

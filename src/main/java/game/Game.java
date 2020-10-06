@@ -52,6 +52,42 @@ public class Game {
         System.out.println("-------");
     }
 
+
+    /**
+     * 逆序数判断是否有解
+     * @param board
+     * @param target
+     * @return
+     */
+    public boolean isSolvable(int[][] board, int[][] target){
+        int targetSum = 0,boardSum = 0;
+        for (int i = 8; i >= 0; i--) {
+            if(target[i/3][i%3] == 0){
+                continue;
+            }
+            for (int j = i-1; j >= 0; j--) {
+                if(target[j/3][j%3] != 0 && target[i/3][i%3] > target[j/3][j%3]){
+                    targetSum++;
+                }
+            }
+        }
+        for (int i = 8; i >= 0; i--) {
+            if(board[i/3][i%3] == 0){
+                continue;
+            }
+            for (int j = i-1; j >= 0; j--) {
+                if(board[j/3][j%3] != 0 && board[i/3][i%3] > board[j/3][j%3]){
+                    boardSum++;
+                }
+            }
+        }
+
+        if((boardSum&1) == (targetSum&1)){
+            return true;
+        }
+        return false;
+    }
+
     /**
      * 模拟游戏（含swap）
      * @param board
@@ -201,6 +237,10 @@ public class Game {
      * @return 步数
      */
     public int slidingPuzzle(int[][] board,int[][] targetInt) {
+
+        if (!isSolvable(board, targetInt)){
+            return -1;
+        }
         int R = board.length, C = board[0].length;
         int sr = 0, sc = 0;
         search:
