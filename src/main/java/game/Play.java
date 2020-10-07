@@ -15,14 +15,20 @@ public class Play {
      * 初始化 + 模拟
      * @throws Exception
      */
-    public static boolean play() throws Exception {
+    public static boolean play(boolean onThread) throws Exception {
 
         // 请求图片
         Subject requestJSON = Request.requestForTheImg(PathUtil.GET_URL);
 
         // 切割请求来的图片
         NineZoneDiv.split(PathUtil.REQUEST_PIC,PathUtil.SRC_PIECES+"/");
-        String finalDir = ImgCompetition.pickTheOneOnInit(PathUtil.SRC_PIECES,PathUtil.TARGET_PIECES);
+        ImgCompetition.initSrc(PathUtil.SRC_PIECES);
+        String finalDir;
+        if(!onThread){
+            finalDir = ImgCompetition.pickTheOneOnInit(PathUtil.TARGET_PIECES);
+        }else{
+            finalDir = ImgCompetition.pickTheOneOnThread(PathUtil.TARGET_PIECES);
+        }
 
         // 图片识别与对比
         if(finalDir != null){

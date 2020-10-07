@@ -5,13 +5,27 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 空间换时间
  */
 public class ImgCompetition {
 
-    public static List<byte[][]> picBytes = new ArrayList<>();;
+    public static List<byte[][]> picBytes = new ArrayList<>();
+    private static byte[][] srcByteArray = new byte[9][16];
+
+    private static PickThread[] pickThreads = new PickThread[36];
+    private static AtomicBoolean hasFound = new AtomicBoolean(false);
+    private static String globalTarget="";
+    private static String globalFinalFile="";
+
+    static{
+        for(int i=0;i<36;i++){
+            pickThreads[i] = new PickThread();
+            pickThreads[i].id = i;
+        }
+    }
 
     /**
      * 初始化：将一张图片转化为均值哈希的byte数组
@@ -41,53 +55,32 @@ public class ImgCompetition {
     }
 
     /**
-     * 两组图片的比较
-     * @param src "D:/testImg/src"
-     * @param target "D:/testImg/target1-36"
+     * 初始化json图片
+     * @param src
+     * @throws IOException
      */
-    public static boolean compare1v1(String src,String target) throws IOException {
-
+    public static void initSrc(String src) throws IOException {
         String[] srcPieces = new File(src).list();
-        String[] targetPieces = new File(target).list();
-        FingerPrint fp1 = null;
-        FingerPrint fp2 = null;
-
-        for (String srcPiece : srcPieces){
-            float max = 0;
-            fp1 = new FingerPrint(ImageIO.read(new File(src+"/"+srcPiece)));
-            for(String targetPiece : targetPieces){
-                fp2 = new FingerPrint(ImageIO.read(new File(target+"/"+targetPiece)));
-                float res = fp1.compare(fp2);
-                if(max < res){
-                    max = res;
-                }
-            }
-            if(max < 1){
-                return false;
-            }
+        FingerPrint fp = null;
+        int cnt=0;
+        for (String srcPiece : srcPieces) {
+            fp = new FingerPrint(ImageIO.read(new File(src+"/"+srcPiece)));
+            srcByteArray[cnt++] = fp.binaryzationMatrix;
         }
-
-        return true;
-
     }
 
     /**
      * 两组图片的比较（在初始化的情况下，通过byte[]比较）
-     * @param src "D:/testImg/src"
-     * @param target "D:/testImg/target1-36"
      * @param index picBytes的索引
      */
-    public static boolean compare1v1OnInit(String src,String target,int index) throws IOException {
+    public static boolean compare1v1OnInit(int index) throws IOException {
 
-        String[] srcPieces = new File(src).list();
-        FingerPrint fp1 = null;
         byte[][] picBytesArray = picBytes.get(index);
 
-        for (String srcPiece : srcPieces){
+        for (byte[] srcByte : srcByteArray){
             float max = 0;
-            fp1 = new FingerPrint(ImageIO.read(new File(src+"/"+srcPiece)));
             for(byte[] pic : picBytesArray){
-                float res = FingerPrint.compare(fp1.binaryzationMatrix,pic);
+                float res = FingerPrint.compare(srcByte,pic);
                 if(max < res){
                     max = res;
                 }
@@ -96,43 +89,17 @@ public class ImgCompetition {
                 return false;
             }
         }
-
         return true;
-
-    }
-
-    /**
-     * 图片匹配，查找与第几张相同
-     * @param src "D:/testImg/src"
-     * @param target "D:/testImg/target"
-     */
-    public static String pickTheOne(String src,String target) throws IOException {
-
-        float[] ans = new float[36];
-        String finalFile="";
-
-        for(int i=1;i<=36;i++){
-            if(compare1v1(src,target+i)){
-                System.out.println("匹配上了，第"+i+"张");
-                finalFile = target+i;
-                break;
-            }
-        }
-        return finalFile;
     }
 
     /**
      * 图片匹配，查找与第几张相同（在初始化的情况下，通过byte[]比较）
-     * @param src "D:/testImg/src"
      * @param target "D:/testImg/target"
      */
-    public static String pickTheOneOnInit(String src,String target) throws IOException {
-
-        float[] ans = new float[36];
+    public static String pickTheOneOnInit(String target) throws IOException {
         String finalFile="";
-
         for(int i=1;i<=36;i++){
-            if(compare1v1OnInit(src,target+i,i-1)){
+            if(compare1v1OnInit(i-1)){
                 System.out.println("匹配上了，第"+i+"张");
                 finalFile = target+i;
                 break;
@@ -141,6 +108,47 @@ public class ImgCompetition {
         return finalFile;
     }
 
+
+    public static String pickTheOneOnThread(String target){
+        globalTarget = target;
+        for (int i = 0; i < 36; i++) {
+            if(pickThreads[i].isAlive()){
+                pickThreads[i].interrupt();
+            }
+            pickThreads[i].start();
+        }
+        try {
+            synchronized (hasFound) {
+                hasFound.wait();//主线程等待
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        //System.out.println("找到了");
+        return globalFinalFile;
+    }
+
+    static class PickThread extends Thread{
+
+        // 0-35
+        int id;
+
+        @Override
+        public void run() {
+            //System.out.println("俺来了 "+id);
+            try {
+                if(compare1v1OnInit(id)){
+                    globalFinalFile = globalTarget+(id+1);
+                    synchronized (hasFound) {//获取对象锁
+                        hasFound.notify();//子线程唤醒
+                    }
+                    System.out.println("匹配上了，第"+(id+1)+"张");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 
 }

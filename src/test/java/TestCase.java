@@ -8,6 +8,7 @@ import util.*;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class TestCase {
 
@@ -43,7 +44,7 @@ public class TestCase {
     public void playWithPic() throws Exception {
         // 初始化，把图片转成内存中的byte[]
         ImgCompetition.init();
-        Assert.assertTrue(Play.play());
+        Assert.assertTrue(Play.play(false));
     }
 
     /**
@@ -55,7 +56,7 @@ public class TestCase {
         int round = 30;
         ImgCompetition.init();
         for (int i = 0; i < round; i++) {
-            if(Play.play()){
+            if(Play.play(false)){
                 cnt++;
             }
         }
@@ -74,6 +75,10 @@ public class TestCase {
         System.out.println(ReadColor.getImagePixel(PathUtil.WHITE_PIC));
     }
 
+    /**
+     * 获取rank
+     * @throws IOException
+     */
     @Test
     public void testForRank() throws IOException {
         Rank.getRank();
