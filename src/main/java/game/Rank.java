@@ -19,13 +19,13 @@ public class Rank {
     class TeamInRank{
 
         @JSONField(name = "rank")
-        int rank;
+        private int rank;
 
         @JSONField(name = "teamid")
-        String teamId;
+        private String teamId;
 
         @JSONField(name = "score")
-        double score;
+        private double score;
 
     }
 
@@ -35,10 +35,10 @@ public class Rank {
     class Solve{
 
         @JSONField(name = "challengeid")
-        String challengeId;
+        private String challengeId;
 
         @JSONField(name = "rank")
-        int rank;
+        private int rank;
     }
 
     @Data
@@ -47,10 +47,10 @@ public class Rank {
     class TeamInDetail{
 
         @JSONField(name = "rank")
-        int rank;
+        private int rank;
 
         @JSONField(name = "score")
-        double score;
+        private double score;
 
         @JSONField(name = "solves")
         List<Solve> solves;
