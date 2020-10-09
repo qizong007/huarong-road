@@ -14,6 +14,7 @@ public class ImgCompetition {
 
     public static List<byte[][]> picBytes = new ArrayList<>();
     private static byte[][] srcByteArray = new byte[9][16];
+    private static byte[] whiteByte = new byte[16];
 
     private static PickThread[] pickThreads = new PickThread[36];
     private static AtomicBoolean hasFound = new AtomicBoolean(false);
@@ -49,9 +50,13 @@ public class ImgCompetition {
      * @throws IOException
      */
     public static void init() throws IOException {
+        // 图库
         for(int i=1;i<=36;i++){
             initOnePic(PathUtil.TARGET_PIECES+i);
         }
+        // 全白图
+        FingerPrint fp = new FingerPrint(ImageIO.read(new File(PathUtil.WHITE_PIC)));
+        whiteByte = fp.binaryzationMatrix;
     }
 
     /**
@@ -150,6 +155,59 @@ public class ImgCompetition {
         }
     }
 
+    /**
+     * 找到白色图片
+     * @param src
+     * @return
+     * @throws Exception
+     */
+    public static int findTheWhite(String src) throws Exception {
+        String[] srcPieces = new File(src).list();
+        float max = 0;
+        int pos = 0;
+        for (int i = 0; i < 9; i++) {
+            float res = FingerPrint.compare(whiteByte,srcByteArray[i]);
+            if(max<res && ReadColor.getImagePixel(src+"/"+srcPieces[i])==ReadColor.getImagePixel(PathUtil.WHITE_PIC)){
+                max = res;
+                pos = i;
+            }
+        }
+        return pos;
+    }
+
+    /**
+     * 图片数组化
+     * @param src "D:/testImg/src"
+     * @param target
+     * @return
+     * @throws Exception
+     */
+    public static int[][] imgToNumArray(String src,String target) throws Exception {
+
+        String[] srcPieces = new File(src).list();
+        String[] targetPieces = new File(target).list();
+        int pos = Integer.parseInt(target.substring(17));
+        int[][] board = new int[3][3];
+
+        int j=0;
+        for(String srcPiece : srcPieces){
+            for(int i=0;i<9;i++){
+                float res = FingerPrint.compare(srcByteArray[j],picBytes.get(pos-1)[i]);
+                if(res == 1){
+                    int x = srcPiece.charAt(0)-'0';
+                    int y = srcPiece.charAt(2)-'0';
+                    if(ReadColor.getImagePixel(src+"/"+srcPiece) == ReadColor.getImagePixel(target+"/"+targetPieces[i])){
+                        board[x][y] = i;
+                        break;
+                    }else{
+                        board[x][y] = -1;
+                    }
+                }
+            }
+            j++;
+        }
+        return board;
+    }
 
 }
 
