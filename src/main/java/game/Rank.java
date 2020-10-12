@@ -16,7 +16,7 @@ public class Rank {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    class TeamInRank{
+    static class TeamInRank{
 
         @JSONField(name = "rank")
         private int rank;
@@ -32,10 +32,13 @@ public class Rank {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    class Solve{
+    static class Success{
 
         @JSONField(name = "challengeid")
         private String challengeId;
+
+        @JSONField(name = "problemid")
+        private String problemId;
 
         @JSONField(name = "rank")
         private int rank;
@@ -44,7 +47,33 @@ public class Rank {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    class TeamInDetail{
+    static class Fail{
+
+        @JSONField(name = "challengeid")
+        private String challengeId;
+
+        @JSONField(name = "problemid")
+        private String problemId;
+
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    static class Unsolved{
+
+        @JSONField(name = "challengeid")
+        private String challengeId;
+
+        @JSONField(name = "problemid")
+        private String problemId;
+
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    static class TeamInDetail{
 
         @JSONField(name = "rank")
         private int rank;
@@ -52,8 +81,14 @@ public class Rank {
         @JSONField(name = "score")
         private double score;
 
-        @JSONField(name = "solves")
-        List<Solve> solves;
+        @JSONField(name = "success")
+        List<Success> success;
+
+        @JSONField(name = "fail")
+        List<Fail> fail;
+
+        @JSONField(name = "unsolved")
+        List<Unsolved> unsolved;
 
     }
 
@@ -62,9 +97,9 @@ public class Rank {
      * @throws IOException
      */
     public static void getRank() throws IOException {
-        List<TeamInRank> teams = JSON.parseObject(HttpJSONUtil.readContentFromGet(PathUtil.GET_RANK), List.class);
+        List<TeamInRank> teams = JSON.parseArray(HttpJSONUtil.readContentFromGet(PathUtil.GET_RANK), TeamInRank.class);
         for(TeamInRank team:teams){
-            System.out.println(team);
+           System.out.println(team);
         }
     }
 
@@ -74,7 +109,20 @@ public class Rank {
      */
     public static void getTeamDetail(String teamId) throws IOException {
         TeamInDetail team = JSON.parseObject(HttpJSONUtil.readContentFromGet(PathUtil.GET_TEAM_DETAIL+teamId), TeamInDetail.class);
-        System.out.println(team);
+        System.out.println("当前排名："+team.rank);
+        System.out.println("当前分数："+team.score);
+        System.out.println("成功的题目如下：");
+        for(Success success : team.success){
+            System.out.println(success);
+        }
+        System.out.println("失败的题目如下：");
+        for(Fail fail : team.fail){
+            System.out.println(fail);
+        }
+        System.out.println("未解决的题目如下：");
+        for(Unsolved unsolved : team.unsolved){
+            System.out.println(unsolved);
+        }
     }
 
 }

@@ -1,6 +1,4 @@
-import game.Game;
-import game.Play;
-import game.Rank;
+import game.*;
 import org.junit.Assert;
 import org.junit.Test;
 import util.*;
@@ -8,8 +6,20 @@ import util.*;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class TestCase {
+
+    @Test
+    public void battle() throws Exception {
+        // 初始化，把图片转成内存中的byte[]
+        ImgCompetition.init();
+        List<Challenge.Question> questions = Challenge.getList();
+        for(Challenge.Question question : questions){
+            Play.battle(PathUtil.TEAM_ID,PathUtil.TEAM_TOKEN,question.getUuid());
+        }
+        Rank.getTeamDetail(PathUtil.TEAM_ID);
+    }
 
     /**
      * 数组游戏模拟
@@ -32,8 +42,8 @@ public class TestCase {
         int[][] board2 = new int[][]{{3,1,8}, {2,4,6},{7,5,0}};
         int[][] target = new int[][]{{1,2,3}, {4,5,6},{7,8,0}};
         Game game = new Game();
-        System.out.println(game.isSolvable(board1, target));
-        System.out.println(game.isSolvable(board2, target));
+        Assert.assertTrue(game.isSolvable(board1, target));
+        Assert.assertFalse(game.isSolvable(board2, target));
     }
 
     /**
@@ -59,6 +69,7 @@ public class TestCase {
                 cnt++;
             }
         }
+        Assert.assertTrue(cnt == round);
         System.out.println("成功率:"+(float)cnt/round);
     }
 
@@ -81,6 +92,55 @@ public class TestCase {
     @Test
     public void testForRank() throws IOException {
         Rank.getRank();
+    }
+
+    /**
+     * 查看队伍详情
+     * @throws IOException
+     */
+    @Test
+    public void testForTeamDetail() throws IOException {
+        System.out.println("我的：");
+        Rank.getTeamDetail(PathUtil.TEAM_ID);
+        //System.out.println("----------------\n我想看的");
+        //Rank.getTeamDetail("24");
+    }
+
+    /**
+     * 看题目
+     * @throws IOException
+     */
+    @Test
+    public void testForChallengeList() throws IOException {
+        Challenge.getList();
+    }
+
+    /**
+     *
+     * @throws IOException
+     */
+    @Test
+    public void testForSingleChallenge() throws IOException {
+        Challenge.getRecord("7efea505-94d1-4c3c-901b-5eb1ccc400e9");
+    }
+
+    @Test
+    public void testForQuestionCreation() throws IOException {
+        Challenge.createQuestion(PathUtil.TEAM_ID,"o",5,PathUtil.TEAM_TOKEN);
+    }
+
+    /**
+     * 测试随机数组生成
+     * @throws IOException
+     */
+    @Test
+    public void testForRandBoard() throws IOException {
+        int[][] board = BoardCreator.generateBoard();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                System.out.print(board[i][j]+" ");
+            }
+        }
     }
 
 }

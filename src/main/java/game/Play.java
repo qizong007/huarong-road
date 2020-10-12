@@ -1,13 +1,51 @@
 package game;
 
-import entity.Answer;
-import entity.AnswerPoster;
-import entity.Subject;
+import entity.*;
 import util.*;
 
 import java.io.IOException;
 
 public class Play {
+
+    /**
+     * 比赛
+     * @throws Exception
+     */
+    public static boolean battle(String teamId,String token,String uuid) throws Exception {
+
+        // 请求图片
+        StartResponse response = Request.requestForTheImg(teamId, token, uuid);
+
+        if(response == null){
+            return false;
+        }
+
+        // 切割请求来的图片
+        NineZoneDiv.split(PathUtil.REQUEST_PIC,PathUtil.SRC_PIECES+"/");
+        ImgCompetition.initSrc(PathUtil.SRC_PIECES);
+        String finalDir;
+        finalDir = ImgCompetition.pickTheOneOnInit(PathUtil.TARGET_PIECES);
+
+        // 图片识别与对比
+        if(finalDir != null){
+            int[][] board = ImgCompetition.imgToNumArray(PathUtil.SRC_PIECES,finalDir);
+            int[][] target = new int[][]{{0,1,2}, {3,4,5},{6,7,8}};
+
+            matrixAdjust(board,target,ImgCompetition.findTheWhite(PathUtil.SRC_PIECES));
+
+            Game game = new Game();
+            int ans = game.slidingPuzzle(board,target,response.getData().getStep(),response.getData().getSwap());
+            boolean f;
+            if(ans != -1){
+                f = processAnswerForBattle(game,ans,response);
+            }else{
+                throw new Exception("检查一下game里的矩阵是不是有2个0？？");
+            }
+            if(!f){ return false; }
+            return true;
+        }
+        return false;
+    }
 
     /**
      * 初始化 + 模拟
@@ -63,6 +101,22 @@ public class Play {
         Answer answer = new Answer(game.op,game.swap);
         AnswerPoster answerPoster = new AnswerPoster(uuid,answer);
         return Request.requestForMyScore(answerPoster);
+    }
+
+    /**
+     * 比赛用
+     * @param game
+     * @param ans
+     * @param response
+     * @return
+     * @throws IOException
+     */
+    private static boolean processAnswerForBattle(Game game,int ans,StartResponse response) throws IOException {
+        System.out.println(game.op+",共"+ans+"步");
+        String uuid = response.getUuid();
+        Answer answer = new Answer(game.op,game.swap);
+        SubmitRequest submitRequest = new SubmitRequest(uuid,PathUtil.TEAM_ID,PathUtil.TEAM_TOKEN,answer);
+        return Request.requestForMyScore(submitRequest);
     }
 
     /**

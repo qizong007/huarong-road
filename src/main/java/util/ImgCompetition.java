@@ -176,7 +176,7 @@ public class ImgCompetition {
     }
 
     /**
-     * 图片数组化
+     * 图片矩阵化
      * @param src "D:/testImg/src"
      * @param target
      * @return

@@ -2,6 +2,9 @@ package game;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
+import entity.Answer;
+import entity.StartRequest;
+import entity.StartResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +19,7 @@ public class Challenge {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    class Question{
+    public static class Question{
 
         @JSONField(name = "uuid")
         private String uuid;
@@ -38,7 +41,7 @@ public class Challenge {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    class Record{
+    static class Record{
 
         @JSONField(name = "rank")
         private int rank;
@@ -57,7 +60,7 @@ public class Challenge {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    class DataAboutQuestion{
+    static class DataAboutQuestion{
 
         @JSONField(name = "letter")
         private String letter;
@@ -67,6 +70,12 @@ public class Challenge {
 
         @JSONField(name = "challenge")
         private int[][] challenge;
+
+        @JSONField(name = "step")
+        private int step;
+
+        @JSONField(name = "swap")
+        private int[] swap;
     }
 
     @Data
@@ -88,7 +97,7 @@ public class Challenge {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    class CreationResponse{
+    static class CreationResponse{
 
         @JSONField(name = "success")
         boolean success;
@@ -105,11 +114,12 @@ public class Challenge {
      * 获取所有赛题
      * @throws IOException
      */
-    public static void getList() throws IOException {
-        List<Question> list = JSON.parseObject(HttpJSONUtil.readContentFromGet(PathUtil.GET_CHALLENGE_LIST), List.class);
+    public static List<Question> getList() throws IOException {
+        List<Question> list = JSON.parseArray(HttpJSONUtil.readContentFromGet(PathUtil.GET_CHALLENGE_LIST), Question.class);
         for(Question question:list){
             System.out.println(question);
         }
+        return list;
     }
 
     /**
@@ -118,7 +128,7 @@ public class Challenge {
      * @throws IOException
      */
     public static void getRecord(String uuid) throws IOException {
-        List<Record> list = JSON.parseObject(HttpJSONUtil.readContentFromGet(PathUtil.GET_CHALLENGE_RECORD+uuid), List.class);
+        List<Record> list = JSON.parseArray(HttpJSONUtil.readContentFromGet(PathUtil.GET_CHALLENGE_RECORD+uuid), Record.class);
         for(Record record:list){
             System.out.println(record);
         }
@@ -127,49 +137,32 @@ public class Challenge {
     /**
      * 创建赛题
      * @param teamId
-     * @param data
+     * @param letter
      * @param token
      * @throws IOException
      */
-    public static void createQuestion(String teamId,DataAboutQuestion data,String token) throws IOException {
+    public static void createQuestion(String teamId,String letter,int exclude,String token) throws IOException {
+        DataAboutQuestion data = new DataAboutQuestion();
+        data.setLetter(letter);
+        data.setExclude(exclude);
+        int[][] board = BoardCreator.generateBoard();
+        for (int i = 0; i < 9; i++) {
+            if(board[i/3][i%3] == exclude){
+                board[i/3][i%3] = 0;
+                break;
+            }
+        }
+        data.setChallenge(board);
+        data.setStep(3);
+        data.setSwap(new int[]{4,5});
         QuestionCreator questionCreator = new QuestionCreator(teamId,data,token);
         String jsonString = JSON.toJSONString(questionCreator);
+        System.out.println(jsonString);
         String response = HttpJSONUtil.readContentFromPost(PathUtil.POST_CHALLENGE_CREATE,jsonString);
         CreationResponse creationResponse = JSON.parseObject(response,CreationResponse.class);
         System.out.println(creationResponse);
     }
 
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    static class StartRequest{
-
-        @JSONField(name = "teamid")
-        String teamId;
-
-        @JSONField(name = "token")
-        String token;
-
-    }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    class StartResponse{
-
-        @JSONField(name = "success")
-        boolean success;
-
-        @JSONField(name = "img")
-        String img;
-
-        @JSONField(name = "expire")
-        long expire;
-
-        @JSONField(name = "chanceleft")
-        int chanceLeft;
-
-    }
 
     /**
      * 挑战赛题的接口
@@ -178,12 +171,12 @@ public class Challenge {
      * @param uuid
      * @throws IOException
      */
-    public static void startChallenge(String teamId,String token,String uuid) throws IOException {
+    public static StartResponse startChallenge(String teamId, String token, String uuid) throws IOException {
         StartRequest startRequest = new StartRequest(teamId,token);
         String jsonString = JSON.toJSONString(startRequest);
         String response = HttpJSONUtil.readContentFromPost(PathUtil.POST_CHALLENGE_START+uuid,jsonString);
         StartResponse startResponse = JSON.parseObject(response,StartResponse.class);
-        System.out.println(startResponse);
+        return startResponse;
     }
 
 }
