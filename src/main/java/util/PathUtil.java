@@ -9,6 +9,7 @@ public class PathUtil {
     public static final String GET_URL = "http://47.102.118.1:8089/api/problem?stuid=111800827";
     public static final String POST_URL = "http://47.102.118.1:8089/api/answer";
     public static final String GET_CHALLENGE_LIST = "http://47.102.118.1:8089/api/challenge/list";
+    public static final String GET_CHALLENGE_LIST_NO_REPEAT = "http://47.102.118.1:8089/api/team/problem/";
     public static final String GET_CHALLENGE_RECORD = "http://47.102.118.1:8089/api/challenge/record/";
     public static final String POST_CHALLENGE_CREATE = "http://47.102.118.1:8089/api/challenge/create";
     public static final String POST_CHALLENGE_START = "http://47.102.118.1:8089/api/challenge/start/";

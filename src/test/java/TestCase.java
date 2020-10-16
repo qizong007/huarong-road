@@ -16,10 +16,28 @@ public class TestCase {
         ImgCompetition.init();
         List<Challenge.Question> questions = Challenge.getList();
         for(Challenge.Question question : questions){
-            Play.battle(PathUtil.TEAM_ID,PathUtil.TEAM_TOKEN,question.getUuid());
+            Play.battle(PathUtil.TEAM_ID,PathUtil.TEAM_TOKEN,question.getUuid(),false);
         }
         Rank.getTeamDetail(PathUtil.TEAM_ID);
     }
+
+
+    @Test
+    public void battleForSingle() throws Exception {
+        // 初始化，把图片转成内存中的byte[]
+        ImgCompetition.init();
+        Play.battle(PathUtil.TEAM_ID,PathUtil.TEAM_TOKEN,"4e0ba10a-8ae1-4210-b357-dcfeb81fb63e",true);
+        //Rank.getTeamDetail(PathUtil.TEAM_ID);
+    }
+
+    @Test
+    public void battleSpecially() throws Exception {
+        String op = "sawddsawwassddwwas";
+        int[] swap = {3,6};
+        Play.specialBattle("08c03088-e35f-4f82-9295-c4505d8b20bd",op,swap);
+        Rank.getTeamDetail(PathUtil.TEAM_ID);
+    }
+
 
     /**
      * 数组游戏模拟
@@ -102,8 +120,6 @@ public class TestCase {
     public void testForTeamDetail() throws IOException {
         System.out.println("我的：");
         Rank.getTeamDetail(PathUtil.TEAM_ID);
-        //System.out.println("----------------\n我想看的");
-        //Rank.getTeamDetail("24");
     }
 
     /**
@@ -111,8 +127,22 @@ public class TestCase {
      * @throws IOException
      */
     @Test
-    public void testForChallengeList() throws IOException {
-        Challenge.getList();
+    public void testForChallengeList() throws IOException, InterruptedException {
+        List<Challenge.Question> questions = Challenge.getAllList();
+        for(Challenge.Question question : questions){
+            String uuid = question.getUuid();
+            List<Challenge.Record> records = Challenge.getRecord(uuid);
+            for(Challenge.Record record : records){
+                if(record.getRank() < 11){
+                    System.out.println(record);
+                }
+                if(record.getOwner().equals(PathUtil.TEAM_ID)){
+                    System.out.println(record);
+                }
+            }
+            System.out.println(question.getUuid());
+            Thread.sleep(1000);
+        }
     }
 
     /**
@@ -121,12 +151,12 @@ public class TestCase {
      */
     @Test
     public void testForSingleChallenge() throws IOException {
-        Challenge.getRecord("7efea505-94d1-4c3c-901b-5eb1ccc400e9");
+        Challenge.getRecord("faffa1cf-b298-452b-b469-d48f8ddf57a0");
     }
 
     @Test
     public void testForQuestionCreation() throws IOException {
-        Challenge.createQuestion(PathUtil.TEAM_ID,"o",5,PathUtil.TEAM_TOKEN);
+        Challenge.createQuestion(PathUtil.TEAM_ID,"a",1,PathUtil.TEAM_TOKEN);
     }
 
     /**

@@ -41,7 +41,7 @@ public class Challenge {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    static class Record{
+    public static class Record{
 
         @JSONField(name = "rank")
         private int rank;
@@ -111,10 +111,22 @@ public class Challenge {
     }
 
     /**
-     * 获取所有赛题
+     * 获取还没写过的赛题
      * @throws IOException
      */
     public static List<Question> getList() throws IOException {
+        List<Question> list = JSON.parseArray(HttpJSONUtil.readContentFromGet(PathUtil.GET_CHALLENGE_LIST_NO_REPEAT+PathUtil.TEAM_ID), Question.class);
+        for(Question question:list){
+            System.out.println(question);
+        }
+        return list;
+    }
+
+    /**
+     * 获取所有赛题
+     * @throws IOException
+     */
+    public static List<Question> getAllList() throws IOException {
         List<Question> list = JSON.parseArray(HttpJSONUtil.readContentFromGet(PathUtil.GET_CHALLENGE_LIST), Question.class);
         for(Question question:list){
             System.out.println(question);
@@ -127,11 +139,12 @@ public class Challenge {
      * @param uuid 题目标识
      * @throws IOException
      */
-    public static void getRecord(String uuid) throws IOException {
+    public static List<Record> getRecord(String uuid) throws IOException {
         List<Record> list = JSON.parseArray(HttpJSONUtil.readContentFromGet(PathUtil.GET_CHALLENGE_RECORD+uuid), Record.class);
         for(Record record:list){
             System.out.println(record);
         }
+        return list;
     }
 
     /**

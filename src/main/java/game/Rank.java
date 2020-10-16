@@ -32,7 +32,7 @@ public class Rank {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    static class Success{
+    public static class Success{
 
         @JSONField(name = "challengeid")
         private String challengeId;
@@ -107,7 +107,7 @@ public class Rank {
      * 获取指定队伍的信息
      * @param teamId
      */
-    public static void getTeamDetail(String teamId) throws IOException {
+    public static List<Success> getTeamDetail(String teamId) throws IOException {
         TeamInDetail team = JSON.parseObject(HttpJSONUtil.readContentFromGet(PathUtil.GET_TEAM_DETAIL+teamId), TeamInDetail.class);
         System.out.println("当前排名："+team.rank);
         System.out.println("当前分数："+team.score);
@@ -123,6 +123,7 @@ public class Rank {
         for(Unsolved unsolved : team.unsolved){
             System.out.println(unsolved);
         }
+        return team.success;
     }
 
 }
