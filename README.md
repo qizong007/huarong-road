@@ -6,6 +6,49 @@
 
 
 
+# 使用指南
+
+## 单个题目
+
+如果只是跑单个题目的话，可以像test文件夹下TestCase中的`battleForSingle()`方法
+
+```java
+@Test
+public void battleForSingle() throws Exception {
+    // 初始化，把图片转成内存中的byte[]
+    ImgCompetition.init();
+    Play.battle(PathUtil.TEAM_ID,PathUtil.TEAM_TOKEN,"bed7baa0-d7b8-4aaa-b488-eb3ca7be46dc",true);
+}
+```
+
+我来解释一下这个方法：
+
+- `ImgCompetition.init();`负责初始化
+- ` Play.battle()`就是真正跑的那个了，具体参数使用如下：
+  - teamid直接用我上面写好的PathUtil里的路径就行
+  - teamtoken同上
+  - 题目的uuid，复制过来就行了
+  - stepFirst，一个布尔值，false为时间优先，true为步数优先
+
+## 在题库里拿题写
+
+如果跑多个就是这样：
+
+```java
+@Test
+public void battle() throws Exception {
+    // 初始化，把图片转成内存中的byte[]
+    ImgCompetition.init();
+    List<Challenge.Question> questions = Challenge.getList();
+    for(Challenge.Question question : questions){
+        Play.battle(PathUtil.TEAM_ID,PathUtil.TEAM_TOKEN,question.getUuid(),false);
+    }
+    Rank.getTeamDetail(PathUtil.TEAM_ID);
+}
+```
+
+
+
 # 开发者日志
 
 ## 第五阶段
@@ -13,6 +56,8 @@
 （2020.10.12）
 
 - 添加比赛接口
+
+
 
 ## 第四阶段
 

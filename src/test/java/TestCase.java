@@ -26,7 +26,7 @@ public class TestCase {
     public void battleForSingle() throws Exception {
         // 初始化，把图片转成内存中的byte[]
         ImgCompetition.init();
-        Play.battle(PathUtil.TEAM_ID,PathUtil.TEAM_TOKEN,"4e0ba10a-8ae1-4210-b357-dcfeb81fb63e",true);
+        Play.battle(PathUtil.TEAM_ID,PathUtil.TEAM_TOKEN,"bed7baa0-d7b8-4aaa-b488-eb3ca7be46dc",true);
         //Rank.getTeamDetail(PathUtil.TEAM_ID);
     }
 
@@ -156,7 +156,7 @@ public class TestCase {
 
     @Test
     public void testForQuestionCreation() throws IOException {
-        Challenge.createQuestion(PathUtil.TEAM_ID,"a",1,PathUtil.TEAM_TOKEN);
+        Challenge.createQuestion(PathUtil.TEAM_ID,"o",6,PathUtil.TEAM_TOKEN);
     }
 
     /**

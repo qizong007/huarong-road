@@ -83,7 +83,7 @@ public class Request {
     public static boolean requestForMyScore(AnswerPoster answerPoster) throws IOException {
         MyScore myScore = JSON.parseObject(submitAnswer(answerPoster),MyScore.class);
         if(myScore.isScore()){
-            System.out.printf("挑战成功！用时：%.2fs\n",myScore.getTime());
+            System.out.printf("挑战成功！用时：%.3fs\n",myScore.getTime());
             return true;
         } else {
             System.err.println("挑战失败...");
