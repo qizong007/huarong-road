@@ -1,8 +1,18 @@
-# 开发环境
+[![github](https://img.shields.io/badge/Java-%E5%8D%8E%E5%AE%B9%E9%81%93-brightgreen)](https://github.com/qizong007)
+
+# 环境
+
+## 开发环境
 
 - IDE：IntelliJ IDEA 2020.1.3
 - 编程语言：Java 11.0.1
 - 单元测试：JUnit-4.9
+
+## 运行环境
+
+（同上即可）
+
+需要注意的是，该项目使用了Lombok插件，需在IDEA商店中安装插件才可使用
 
 
 
